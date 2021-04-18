@@ -4,6 +4,6 @@ services:
   todo-frontend:
     image: node:15.14.0-slim
     container_name: todo-frontend
-    tty: true
+    command: sh -c "cd /home/node/todo-frontend && yarn start"
     volumes:
       - ./frontend:/home/node/todo-frontend
