@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  todo-frontend:
+    image: node:15.14.0-slim
+    container_name: todo-frontend
+    tty: true
+    volumes:
+      - ./frontend:/home/node/todo-frontend
