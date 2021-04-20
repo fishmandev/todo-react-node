@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Item from './Item';
 
 const ToDo = () => {
   const [list, setList] = useState([]);
@@ -40,7 +41,7 @@ const ToDo = () => {
       <div>
         <div>
           {list.map((item) => {
-            return <div deleteTask={deleteTask}>{item.text}</div>;
+            return <Item key={item.id} item={item} deleteTask={deleteTask}/>;
           })}
         </div>
         <div>
