@@ -4,13 +4,13 @@ services:
   todo-frontend:
     image: node:15.14.0-slim
     container_name: todo-frontend
-    command: sh -c "cd /home/node/todo-frontend && yarn start"
+    command: sh -c "su - node && cd /home/node/todo-frontend && yarn start"
     volumes:
       - ./frontend:/home/node/todo-frontend
 
   todo-backend:
     image: node:15.14.0-slim
     container_name: todo-backend
-    tty: true
+    command: sh -c "su - node && cd /home/node/todo-backend && npm run dev"
     volumes:
       - ./backend:/home/node/todo-backend
