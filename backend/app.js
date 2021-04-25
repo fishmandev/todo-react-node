@@ -1,11 +1,13 @@
 var express = require('express');
 var logger = require('morgan');
 var helmet = require('helmet');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 
 var app = express();
 
+app.use(cors()); // Enable All CORS Requests
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
