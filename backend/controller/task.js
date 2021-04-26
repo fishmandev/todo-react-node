@@ -14,4 +14,9 @@ module.exports = {
         return res.status(404).json();
     }).catch(next);
   },
+  create: (req, res, next) => {
+    task.create(req.body.name).then(result => {
+      return res.status(201).json({data: result});
+    }).catch(next);
+  }
 };
