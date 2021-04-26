@@ -27,5 +27,18 @@ module.exports = {
           return result.getAffectedItemsCount();
       })
     });
+  },
+  create: (name) => {
+    return mysql.getSession().then(session => {
+      const taskTable = session.getDefaultSchema().getTable('task');
+
+      return taskTable
+        .insert(['name'])
+        .values(name)
+        .execute().then(result => {
+          session.close();
+          return result.getAutoIncrementValue();
+      });
+    });
   }
 };
