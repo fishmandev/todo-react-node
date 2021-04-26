@@ -8,6 +8,7 @@ let taskRouter = require('./routes/task');
 
 var app = express();
 
+app.use(express.json());
 app.use(cors()); // Enable All CORS Requests
 app.use(helmet());
 app.use(logger('dev'));
