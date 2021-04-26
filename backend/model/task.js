@@ -13,4 +13,19 @@ module.exports = {
       });
     });
   },
+  delete: (id) => {
+    return mysql.getSession().then(session => {
+      const taskTable = session.getDefaultSchema().getTable('task');
+
+      return taskTable
+        .delete()
+        .where('id=:id')
+        .bind('id', parseInt(id))
+        .execute()
+        .then(result => {
+          session.close();
+          return result.getAffectedItemsCount();
+      })
+    });
+  }
 };
