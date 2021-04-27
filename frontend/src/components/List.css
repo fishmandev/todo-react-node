@@ -1,0 +1,21 @@
+.list {
+    text-align: center;
+    width: 80vw;
+    max-width: 768px;
+    height: auto;
+    margin: 40px auto;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.input {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
