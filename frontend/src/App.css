@@ -1,3 +1,28 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, sans-serif;
+  height: auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(255, 171, 208);
+  background: linear-gradient(135deg, rgb(253, 236, 177), rgb(144, 164, 234));
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  font-size: 1em;
+  margin: 10px 10px 10px auto;
+  border-radius: 4px;
+  padding: 12px;
+  border-color: rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  box-shadow: 5px 5px 13px #d9d9d9, -5px -5px 13px #ffffff;
 }
