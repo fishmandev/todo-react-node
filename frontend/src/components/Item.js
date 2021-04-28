@@ -1,12 +1,13 @@
 import React from 'react';
+import './Item.css'
 
 const Item = (props) => {
   const {item, deleteTask} = props;
 
   return (
-      <div>
-        <p>{item.text}</p>
-        <button onClick={() => deleteTask(item.id)}>-</button>
+      <div className='item'>
+        <p className='item-text'>{item.name}</p>
+        <button className='item-delete' onClick={() => deleteTask(item.id)}>-</button>
       </div>
   );
 };
