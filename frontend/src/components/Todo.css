@@ -1,4 +1,4 @@
-.list {
+.todo {
     text-align: center;
     width: 80vw;
     max-width: 768px;
@@ -6,9 +6,4 @@
     margin: 40px auto;
     border-radius: 10px;
     background: #ffffff;
-}
-
-.container {
-    width: 80%;
-    margin: 0 auto;
 }

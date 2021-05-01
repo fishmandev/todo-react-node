@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Item from './Item';
 import { read, remove, create } from '../api/task';
-import './Todo.css'
 import CreateTask from './CreateTask';
+import List from './List';
+import './Todo.css'
 
 const ToDo = () => {
   const [list, setList] = useState([]);
@@ -41,18 +41,14 @@ const ToDo = () => {
   }
 
   return (
-    <div className='list'>
+    <div className='todo'>
       <div className='container'>
         <CreateTask
           value={task}
           onCreateTaskChange={handleCreateTaskInputChange}
           onCreateTaskEnterKeyPress={handleCreateTaskEnterKeyPress}
         />
-        <div className='content'>
-          {list.map((item) => {
-            return <Item key={item.id} item={item} deleteTask={deleteTask} />;
-          })}
-        </div>
+        <List list={list} onDeleteTask={deleteTask} />
       </div>
     </div>
   );
