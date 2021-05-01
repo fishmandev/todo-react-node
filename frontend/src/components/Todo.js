@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Item from './Item';
 import { read, remove, create } from '../api/task';
-import './List.css'
+import './Todo.css'
 import CreateTask from './CreateTask';
 
 const ToDo = () => {
@@ -46,7 +46,8 @@ const ToDo = () => {
         <CreateTask
           value={task}
           onCreateTaskChange={handleCreateTaskInputChange}
-          onCreateTaskEnterKeyPress={handleCreateTaskEnterKeyPress} />
+          onCreateTaskEnterKeyPress={handleCreateTaskEnterKeyPress}
+        />
         <div className='content'>
           {list.map((item) => {
             return <Item key={item.id} item={item} deleteTask={deleteTask} />;
