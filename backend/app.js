@@ -5,6 +5,7 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 let taskRouter = require('./routes/task');
+let authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
 app.use('/tasks', taskRouter);
+app.use('/auth', authRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
