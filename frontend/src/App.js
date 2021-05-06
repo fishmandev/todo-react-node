@@ -1,9 +1,16 @@
 import './App.css';
-import Todo from './components/Todo'
+import Todo from './components/Todo';
+import Login from './components/Login';
+import { Switch, Route } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   return (
-      <Todo />
+    <Switch>
+      <PrivateRoute exact path="/" component={Todo} />
+      <Route path="/login" component={Login} />
+    </Switch>
+
   );
 }
 
