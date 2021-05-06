@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { read, remove, create } from '../api/task';
 import CreateTask from './CreateTask';
+import { useHistory } from "react-router-dom";
+import { useAuth } from './../useAuth';
 import List from './List';
 import './Todo.css'
 
 const ToDo = () => {
   const [list, setList] = useState([]);
   const [task, setTask] = useState('');
+  const auth = useAuth();
+  const history = useHistory();
 
   useEffect(() => {
-    read().then(setList)
+    read(auth.token).then(setList)
       .catch(err => {
-        // TODO Add error handler
+        if (err.message === '401') {
+          auth.logout();
+          history.push('/login');
+        }
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteTask = (id) => {

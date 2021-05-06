@@ -5,8 +5,12 @@ import client from './client';
  *
  * @returns {Promise<Response>}
  */
-const read = () => {
-  return client('tasks').then(result => {
+const read = (accessToken) => {
+  return client('tasks', {
+    'headers': {
+      'x-access-token': accessToken
+    }
+  }).then(result => {
     return result.items;
   });
 };
@@ -18,7 +22,7 @@ const read = () => {
  * @returns {Promise<Response>}
  */
 const remove = (taskId) => {
-  return client(`tasks/${taskId}`, {method: 'DELETE'});
+  return client(`tasks/${taskId}`, { method: 'DELETE' });
 };
 
 /**
@@ -28,10 +32,10 @@ const remove = (taskId) => {
  * @returns {Promise<Response>}
  */
 const create = (name) => {
-  return client('tasks', {body: {name: name}})
+  return client('tasks', { body: { name: name } })
     .then(result => {
       return result.data;
-  });
+    });
 };
 
-export {read, remove, create};
+export { read, remove, create };
