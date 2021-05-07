@@ -28,7 +28,7 @@ const generateRefreshToken = async (userId) => {
   return refreshToken;
 }
 
-const updateTokens = async (userId, refreshTokenId) => {
+const getUpdatedTokens = async (userId, refreshTokenId) => {
   let isDeleted = await refreshTokenModel.delete(refreshTokenId);
   if (!isDeleted)
     throw new UnauthorizedException('Unauthorized');
@@ -53,19 +53,17 @@ module.exports = {
       }).catch(next);
     }).catch(next);
   },
-  getToken: (req, res, next) => {
+  getToken: async (req, res, next) => {
     const refreshToken = req.body.refreshToken || '';
     let refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_KEY;
-    jwt.verify(refreshToken, refreshTokenSecret, { algorithms: ['HS512'] }, (err, decoded) => {
-      if (err)
-        return res.status(401).json({ error: 'Unauthorized' })
-      updateTokens(decoded.id, decoded.rid)
-        .then(tokens => res.status(200).json(tokens))
-        .catch(err => {
-          if (err instanceof UnauthorizedException)
-            return res.status(401).json({ error: 'Unauthorized' });
-          next(err);
-        });
-    });
+    try {
+      let { id, rid } = jwt.verify(refreshToken, refreshTokenSecret, { algorithms: ['HS512'] });
+      let tokens = await getUpdatedTokens(id, rid);
+      res.status(200).json(tokens);
+    } catch (err) {
+      if (err instanceof UnauthorizedException || err instanceof jwt.JsonWebTokenError)
+        return res.status(401).json({ error: 'Unauthorized' });
+      next(err);
+    }
   }
 };
