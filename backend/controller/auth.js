@@ -11,7 +11,8 @@ module.exports = {
         return res.status(401).json({ erorr: 'Invalid username or password' });
 
       let token = jwt.sign({ id: user.id }, process.env.JWT_ACCESS_TOKEN_KEY, {
-        expiresIn: 86400 // expires in 24 hours
+        expiresIn: 86400, // expires in 24 hours
+        algorithm: 'HS512'
       });
       res.status(200).json({ accessToken: token });
     }).catch(next);
