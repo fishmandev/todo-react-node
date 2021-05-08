@@ -13,18 +13,10 @@ class UnauthorizedException extends Error {
 const generateRefreshToken = async (userId) => {
   let timestamp = + new Date();
   let id = await refreshTokenModel.create(userId, timestamp);
-  let refreshToken = jwt.sign(
-    {
-      id: userId,
-      rid: id, // row id (PK)
-      ts: timestamp
-    },
-    process.env.JWT_REFRESH_TOKEN_KEY,
-    {
-      expiresIn: 86400,
-      algorithm: 'HS512'
-    }
-  );
+  let refreshToken = jwt.sign({ id: userId, rid: id, ts: timestamp }, process.env.JWT_REFRESH_TOKEN_KEY, {
+    expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
+    algorithm: 'HS512'
+  });
   return refreshToken;
 }
 
@@ -32,9 +24,12 @@ const getUpdatedTokens = async (userId, refreshTokenId) => {
   let isDeleted = await refreshTokenModel.delete(refreshTokenId);
   if (!isDeleted)
     throw new UnauthorizedException('Unauthorized');
-  let accessToken = jwt.sign({ id: userId }, process.env.JWT_ACCESS_TOKEN_KEY, { expiresIn: 86400, algorithm: 'HS512' });
+  let accessToken = jwt.sign({ id: userId }, process.env.JWT_ACCESS_TOKEN_KEY, {
+    expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
+    algorithm: 'HS512'
+  });
   let refreshToken = await generateRefreshToken(userId);
-  return { accessToken: accessToken, refreshToken: refreshToken };
+  return { accessToken, refreshToken };
 }
 
 module.exports = {
@@ -46,11 +41,11 @@ module.exports = {
       if (!user || !bcrypt.compareSync(password, user.password))
         throw new UnauthorizedException('Invalid username or password');
       let accessToken = jwt.sign({ id: user.id }, process.env.JWT_ACCESS_TOKEN_KEY, {
-        expiresIn: 86400, // expires in 24 hours
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
         algorithm: 'HS512'
       });
       let refreshToken = await generateRefreshToken(user.id);
-      res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken });
+      res.status(200).json({ accessToken, refreshToken });
     } catch (err) {
       if (err instanceof UnauthorizedException)
         return res.status(401).json({ error: err.message });
