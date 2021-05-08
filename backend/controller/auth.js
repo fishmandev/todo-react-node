@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const user = require('../model/user');
+const userModel = require('../model/user');
 const refreshTokenModel = require('../model/refreshToken');
 
 class UnauthorizedException extends Error {
@@ -38,20 +38,24 @@ const getUpdatedTokens = async (userId, refreshTokenId) => {
 }
 
 module.exports = {
-  getAccessToken: (req, res, next) => {
+  getAccessToken: async (req, res, next) => {
     const username = req.body.username || '';
     const password = req.body.password || '';
-    user.getUserByUsername(username).then(user => {
+    try {
+      let user = await userModel.getUserByUsername(username);
       if (!user || !bcrypt.compareSync(password, user.password))
-        return res.status(401).json({ erorr: 'Invalid username or password' });
+        throw new UnauthorizedException('Invalid username or password');
       let accessToken = jwt.sign({ id: user.id }, process.env.JWT_ACCESS_TOKEN_KEY, {
         expiresIn: 86400, // expires in 24 hours
         algorithm: 'HS512'
       });
-      generateRefreshToken(user.id).then(refreshToken => {
-        res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken });
-      }).catch(next);
-    }).catch(next);
+      let refreshToken = await generateRefreshToken(user.id);
+      res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken });
+    } catch (err) {
+      if (err instanceof UnauthorizedException)
+        return res.status(401).json({ error: err.message });
+      next(err);
+    }
   },
   getToken: async (req, res, next) => {
     const refreshToken = req.body.refreshToken || '';
