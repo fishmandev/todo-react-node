@@ -1,32 +1,25 @@
 const mysql = require('../mysql');
 
+const getSessionTable = async () => {
+  let session = await mysql.getSession();
+  let table = session.getDefaultSchema().getTable('refreshToken');
+
+  return { session, table };
+}
+
 module.exports = {
-  delete: (id) => {
-    return mysql.getSession().then(session => {
-      const refreshTokenTable = session.getDefaultSchema().getTable('refreshToken');
+  delete: async (id) => {
+    let { session, table } = await getSessionTable();
+    let result = await table.delete().where('id=:id').bind('id', parseInt(id)).execute();
+    session.close();
 
-      return refreshTokenTable
-        .delete()
-        .where('id=:id')
-        .bind('id', parseInt(id))
-        .execute()
-        .then(result => {
-          session.close();
-          return result.getAffectedItemsCount();
-      })
-    });
+    return result.getAffectedItemsCount();
   },
-  create: (userId, createdAt) => {
-    return mysql.getSession().then(session => {
-      const refreshTokenTable = session.getDefaultSchema().getTable('refreshToken');
+  create: async (userId, createdAt) => {
+    let { session, table } = await getSessionTable();
+    let result = await table.insert(['user_id', 'created_at']).values(userId, createdAt).execute();
+    session.close();
 
-      return refreshTokenTable
-        .insert(['user_id', 'created_at'])
-        .values(userId, createdAt)
-        .execute().then(result => {
-          session.close();
-          return result.getAutoIncrementValue();
-      });
-    });
+    return result.getAutoIncrementValue();
   }
 };
