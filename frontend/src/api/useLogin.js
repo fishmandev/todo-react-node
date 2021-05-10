@@ -15,7 +15,7 @@ const useLogin = () => {
     });
   }
 
-  return {login}
+  return { login };
 }
 
 export default useLogin;
