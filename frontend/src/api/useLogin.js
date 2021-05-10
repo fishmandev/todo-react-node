@@ -1,10 +1,11 @@
 import { useAuth } from './../useAuth';
-import client from './client';
+import useClient from './useClient';
 
 const useLogin = () => {
   const auth = useAuth();
+  const client = useClient();
   const login = (username, password) => {
-    return client('auth/access_token', {
+    return client.fetch('auth/access_token', {
       body: {
         username: username,
         password: password

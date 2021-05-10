@@ -1,9 +1,10 @@
-import client from './client';
+import useClient from './useClient';
 import { useAuth } from './../useAuth';
 import { useHistory } from "react-router-dom";
 
 const useTask = () => {
   const auth = useAuth();
+  const client = useClient();
   const history = useHistory();
   const headers = {
     'headers': {
@@ -12,7 +13,7 @@ const useTask = () => {
   }
 
   const read = () => {
-    return client('tasks', headers)
+    return client.fetch('tasks', headers)
       .then(result => result.items)
       .catch(err => {
         if (err.message === '401') {
@@ -22,10 +23,10 @@ const useTask = () => {
       });
   }
 
-  const create = (name) => client('tasks', { body: { name: name } })
+  const create = (name) => client.fetch('tasks', { body: { name: name } })
     .then(result => result.data);
 
-  const remove = (taskId) => client(`tasks/${taskId}`, { method: 'DELETE' });
+  const remove = (taskId) => client.fetch(`tasks/${taskId}`, { method: 'DELETE' });
 
   return { read, create, remove };
 }
