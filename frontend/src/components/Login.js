@@ -1,13 +1,11 @@
 import { useHistory } from "react-router-dom";
 import React, { useState } from 'react';
-import login from './../api/login';
-import { useAuth } from './../useAuth';
+import useLogin from './../api/useLogin';
 import './Login.css';
 
 const Login = () => {
-  let auth = useAuth();
-  let history = useHistory();
-
+  const auth = useLogin();
+  const history = useHistory();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,8 +19,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    login(username, password).then(accessToken => {
-      auth.login(accessToken);
+    auth.login(username, password).then(() => {
       history.push('/');
     }).catch(err => {
       // TODO Add error handler
