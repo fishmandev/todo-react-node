@@ -1,5 +1,7 @@
+import { useAuth } from './../useAuth';
 
 const useClient = () => {
+  const auth = useAuth();
   const fetch = (endpoint, { body, ...customConfig } = {}) => {
     const apiUrl = process.env.REACT_APP_SERVER_API_URL || 'http://localhost';
     const headers = { 'Content-Type': 'application/json' };
@@ -24,12 +26,30 @@ const useClient = () => {
           return '';
         } else {
           return response.text().then(err => {
-            if (response.status === 401)
+            if (response.status === 401) {
+              if (endpoint !== 'auth/access_token' && endpoint !== 'auth/token')
+                return updateTokens(endpoint, config);
               throw new Error('401');
+            }
+
             throw new Error(err);
           });
         }
       });
+  };
+
+  const updateTokens = (endpoint, config) => {
+    return fetch('auth/token', {
+      body: {
+        refreshToken: auth.getRefreshToken()
+      }
+    }).then(result => {
+      auth.login(result.accessToken, result.refreshToken);
+      const authHeader = { 'x-access-token': result.accessToken };
+      config.headers = { ...config.headers, ...authHeader };
+
+      return fetch(endpoint, config);
+    });
   };
 
   return { fetch };

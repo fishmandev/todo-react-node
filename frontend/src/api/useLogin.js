@@ -11,7 +11,7 @@ const useLogin = () => {
         password: password
       }
     }).then(result => {
-      auth.login(result.accessToken)
+      auth.login(result.accessToken, result.refreshToken)
       return true;
     });
   }

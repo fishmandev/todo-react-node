@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, createContext } from 'react';
+import React, { useContext, createContext } from 'react';
 
 const authContext = createContext();
 
@@ -12,24 +12,22 @@ const useAuth = () => {
   return useContext(authContext);
 };
 
-const getToken = () => {
-  return localStorage.getItem('accessToken');
-}
-
 const useProvideAuth = () => {
-  const [token, setToken] = useState(getToken());
 
-  const login = (accessToken) => {
-    setToken(accessToken);
+  const login = (accessToken, refreshToken) => {
     localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
   }
 
   const logout = () => {
-    setToken(null);
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   }
 
-  return { login, logout, token };
+  const getAccessToken = () => localStorage.getItem('accessToken');
+  const getRefreshToken = () => localStorage.getItem('refreshToken');
+
+  return { login, logout, getAccessToken, getRefreshToken };
 };
 
 export { useAuth, ProvideAuth };

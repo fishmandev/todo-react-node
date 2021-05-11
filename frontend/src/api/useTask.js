@@ -8,7 +8,7 @@ const useTask = () => {
   const history = useHistory();
   const headers = {
     'headers': {
-      'x-access-token': auth.token
+      'x-access-token': auth.getAccessToken()
     }
   }
 
