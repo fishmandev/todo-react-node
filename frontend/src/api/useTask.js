@@ -7,13 +7,11 @@ const useTask = () => {
   const client = useClient();
   const history = useHistory();
   const headers = {
-    'headers': {
-      'x-access-token': auth.getAccessToken()
-    }
+    'x-access-token': auth.getAccessToken(),
   }
 
   const read = () => {
-    return client.fetch('tasks', headers)
+    return client.fetch('tasks', { headers })
       .then(result => result.items)
       .catch(err => {
         if (err.message === '401') {
@@ -23,7 +21,7 @@ const useTask = () => {
       });
   }
 
-  const create = (name) => client.fetch('tasks', { body: { name: name } })
+  const create = (name) => client.fetch('tasks', { body: { name: name }, headers })
     .then(result => result.data);
 
   const remove = (taskId) => client.fetch(`tasks/${taskId}`, { method: 'DELETE' });

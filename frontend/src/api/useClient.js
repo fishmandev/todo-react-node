@@ -27,8 +27,10 @@ const useClient = () => {
         } else {
           return response.text().then(err => {
             if (response.status === 401) {
-              if (endpoint !== 'auth/access_token' && endpoint !== 'auth/token')
-                return updateTokens(endpoint, config);
+              if (endpoint !== 'auth/access_token'
+                && endpoint !== 'auth/token'
+                && config.headers.hasOwnProperty('x-access-token'))
+                return updateTokens(endpoint, { body, ...customConfig });
               throw new Error('401');
             }
 
@@ -38,7 +40,7 @@ const useClient = () => {
       });
   };
 
-  const updateTokens = (endpoint, config) => {
+  const updateTokens = (endpoint, { body, ...customConfig }) => {
     return fetch('auth/token', {
       body: {
         refreshToken: auth.getRefreshToken()
@@ -46,9 +48,9 @@ const useClient = () => {
     }).then(result => {
       auth.login(result.accessToken, result.refreshToken);
       const authHeader = { 'x-access-token': result.accessToken };
-      config.headers = { ...config.headers, ...authHeader };
+      customConfig.headers = { ...customConfig.headers, ...authHeader };
 
-      return fetch(endpoint, config);
+      return fetch(endpoint, { body, ...customConfig });
     });
   };
 

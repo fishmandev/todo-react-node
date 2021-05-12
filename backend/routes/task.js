@@ -5,6 +5,6 @@ const verifyToken = require('./../middleware/verifyToken');
 
 router.get('/', verifyToken, task.index);
 router.delete('/:id', task.delete);
-router.post('/', task.create);
+router.post('/', verifyToken, task.create);
 
 module.exports = router;
