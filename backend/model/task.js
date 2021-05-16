@@ -1,44 +1,34 @@
 const mysql = require('../mysql');
 
+const getSessionTable = async () => {
+  let session = await mysql.getSession();
+  let table = session.getDefaultSchema().getTable('task');
+
+  return { session, table };
+}
+
 module.exports = {
-  fetchAll: () => {
-    return mysql.getSession().then(session => {
-      const taskTable = session.getDefaultSchema().getTable('task');
+  fetchAll: async () => {
+    let { session, table } = await getSessionTable();
+    let result = await table.select().execute();
+    session.close();
 
-      return taskTable.select().execute().then(result => {
-        session.close();
-        return result.fetchAll().map(value => (
-            {'id': value[0], 'name': value[1]}
-        ));
-      });
-    });
+    return result.fetchAll().map(value => (
+      { 'id': value[0], 'name': value[1] }
+    ));
   },
-  delete: (id) => {
-    return mysql.getSession().then(session => {
-      const taskTable = session.getDefaultSchema().getTable('task');
+  delete: async (id) => {
+    let { session, table } = await getSessionTable();
+    let result = await table.delete().where('id=:id').bind('id', parseInt(id)).execute();
+    session.close();
 
-      return taskTable
-        .delete()
-        .where('id=:id')
-        .bind('id', parseInt(id))
-        .execute()
-        .then(result => {
-          session.close();
-          return result.getAffectedItemsCount();
-      })
-    });
+    return result.getAffectedItemsCount();
   },
-  create: (name) => {
-    return mysql.getSession().then(session => {
-      const taskTable = session.getDefaultSchema().getTable('task');
+  create: async (name) => {
+    let { session, table } = await getSessionTable();
+    let result = await table.insert(['name']).values(name).execute();
+    session.close();
 
-      return taskTable
-        .insert(['name'])
-        .values(name)
-        .execute().then(result => {
-          session.close();
-          return result.getAutoIncrementValue();
-      });
-    });
+    return result.getAutoIncrementValue();
   }
 };
