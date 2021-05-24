@@ -14,7 +14,7 @@
   left: calc(50% - 4em);
   width: 3em;
   height: 3em;
-  border: 0.3em solid rgba(255, 255, 255, 0.5);
+  border: 0.3em solid rgba(180, 180, 180, 0.5);
   border-left: 0.3em solid #000000;
   border-radius: 50%;
   animation: load 1.5s infinite linear;

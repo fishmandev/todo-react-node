@@ -11,14 +11,16 @@ const ToDo = () => {
   const Task = useTask();
 
   useEffect(() => {
-    setIsLoaded(false);
-    Task.read().then(setList).then(() => { setIsLoaded(true) });
+    setIsLoaded(true);
+    Task.read().then(setList).then(() => { setIsLoaded(false) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteTask = (id) => {
+    setIsLoaded(true);
     Task.remove(id).then(() => {
       setList(list.filter((item) => item.id !== id));
+      setIsLoaded(false);
     }).catch(err => {
       // TODO Add error handler
     });
@@ -43,18 +45,15 @@ const ToDo = () => {
 
   return (
     <div className='todo'>
-      { isLoaded ? (
-        <div className='container'>
-          <CreateTask
-            value={task}
-            onCreateTaskChange={handleCreateTaskInputChange}
-            onCreateTaskEnterKeyPress={handleCreateTaskEnterKeyPress}
-          />
-          <List list={list} onDeleteTask={deleteTask} />
-        </div>
-      ) : (
-        <div className='loader'></div>
-      )}
+      <div className='container'>
+        <CreateTask
+          value={task}
+          onCreateTaskChange={handleCreateTaskInputChange}
+          onCreateTaskEnterKeyPress={handleCreateTaskEnterKeyPress}
+        />
+        <List list={list} onDeleteTask={deleteTask} />
+      </div>
+      { isLoaded && <div className="loader"></div>}
     </div>
   );
 };
