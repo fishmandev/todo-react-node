@@ -12,7 +12,7 @@ const ToDo = () => {
 
   useEffect(() => {
     setIsLoaded(true);
-    Task.read().then(setList).then(() => { setIsLoaded(false) });
+    Task.read().then(setList).finally(() => { setIsLoaded(false) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -20,9 +20,10 @@ const ToDo = () => {
     setIsLoaded(true);
     Task.remove(id).then(() => {
       setList(list.filter((item) => item.id !== id));
-      setIsLoaded(false);
     }).catch(err => {
       // TODO Add error handler
+    }).finally(() => {
+      setIsLoaded(false);
     });
   };
 
@@ -34,12 +35,15 @@ const ToDo = () => {
     if (!task) {
       return; // Not valid
     }
+    setIsLoaded(true);
     Task.create(task).then((newId) => {
       const newTask = { id: newId, name: task };
       setList([...list, newTask]);
       setTask('');
     }).catch(err => {
       // TODO Add error handler
+    }).finally(() => {
+      setIsLoaded(false);
     });
   }
 
