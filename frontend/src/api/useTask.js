@@ -17,6 +17,8 @@ const useTask = () => {
         if (err.message === '401') {
           auth.logout();
           history.push('/login');
+        } else {
+          throw err;
         }
       });
   }

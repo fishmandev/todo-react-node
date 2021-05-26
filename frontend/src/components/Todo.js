@@ -12,7 +12,9 @@ const ToDo = () => {
 
   useEffect(() => {
     setIsLoaded(true);
-    Task.read().then(setList).finally(() => { setIsLoaded(false) });
+    Task.read().then(setList).catch(err => {
+      // TODO Add error handler
+    }).finally(() => { setIsLoaded(false) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
